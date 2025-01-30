@@ -1,5 +1,6 @@
 package com.ecom.PaymentService.Kafka;
 
+import com.ecom.PaymentService.Deserializer.OrderDeserializer;
 import com.ecom.PaymentService.Entity.Order;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
@@ -48,24 +49,21 @@ public class KafkaConfig {
     }
 
     @Bean
-    public <T> ConsumerFactory<String, T> consumerFactory(Class<T> targetType) {
-        JsonDeserializer<T> deserializer = new JsonDeserializer<>(targetType);
-        deserializer.addTrustedPackages("*"); // Allows all packages for deserialization
-
+    public ConsumerFactory<String, Order> consumerFactory() {
         Map<String, Object> config = new HashMap<>();
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
-        config.put(ConsumerConfig.GROUP_ID_CONFIG, "Group-1");
+        config.put(ConsumerConfig.GROUP_ID_CONFIG, "Group-2");
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, OrderDeserializer.class); // Use custom deserializer
         config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
-        return new DefaultKafkaConsumerFactory<>(config, new StringDeserializer(), deserializer);
+        return new DefaultKafkaConsumerFactory<>(config, new StringDeserializer(), new OrderDeserializer());
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, Order> paymentKafkaListenerContainerFactory() {
+    public ConcurrentKafkaListenerContainerFactory<String, Order> orderKafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, Order> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory(Order.class));
+        factory.setConsumerFactory(consumerFactory());
         return factory;
     }
 

@@ -2,6 +2,7 @@ package com.ecom.PaymentService.Entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.ToString;
 
 @AllArgsConstructor
 @Data

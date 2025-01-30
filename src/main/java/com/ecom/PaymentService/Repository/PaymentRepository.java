@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface PaymentRepository extends JpaRepository<Payment, Integer> {
     public Payment findByOrderId(int orderId);
+    public List<Payment> findByCustomerId(int customerId);
 }

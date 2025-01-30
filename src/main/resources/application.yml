@@ -19,6 +19,6 @@ spring:
   kafka:
     bootstrap-servers: localhost:9092
   profiles:
-    active: default
+    active: prod
 
 
