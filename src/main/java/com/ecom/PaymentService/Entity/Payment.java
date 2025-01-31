@@ -21,6 +21,7 @@ public class Payment {
     public int paymentId;
     public int orderId;
     public int customerId;
+    public int productId;
     public int quantity;
     public String status;
     public double amount;

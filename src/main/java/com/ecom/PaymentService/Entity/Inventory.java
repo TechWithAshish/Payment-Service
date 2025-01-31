@@ -1,21 +1,18 @@
 package com.ecom.PaymentService.Entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.ToString;
+import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
-public class Order {
+@Builder
+public class Inventory {
     public int orderId;
     public int customerId;
-    public int productId;
     public int quantity;
-    public double price;
-    public String status;
-    public int paymentId;
-
-    public Order(){
-
-    }
+    public double amount;
+    public int productId;
 }

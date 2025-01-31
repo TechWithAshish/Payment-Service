@@ -28,7 +28,6 @@ public class PaymentStatusProducer {
     @Transactional
     public void publishPaymentEventToKafka() throws JsonProcessingException {
         List<PaymentOutbox> paymentOutboxList = outboxRepository.findAll();
-
         for(PaymentOutbox paymentOutbox : paymentOutboxList){
             Payment payment = objectMapper.readValue(paymentOutbox.getPayload(), Payment.class);
             log.info("Publishing event for Topic: {} with payload : {}", paymentOutbox.getTopic(), paymentOutbox.getPayload());

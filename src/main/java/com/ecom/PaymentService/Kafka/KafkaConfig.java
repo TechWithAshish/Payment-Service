@@ -1,7 +1,7 @@
 package com.ecom.PaymentService.Kafka;
 
-import com.ecom.PaymentService.Deserializer.OrderDeserializer;
-import com.ecom.PaymentService.Entity.Order;
+import com.ecom.PaymentService.Deserializer.InventoryDeserializer;
+import com.ecom.PaymentService.Entity.Inventory;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.*;
-import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 
 import java.util.HashMap;
@@ -49,26 +48,30 @@ public class KafkaConfig {
     }
 
     @Bean
-    public ConsumerFactory<String, Order> consumerFactory() {
+    public ConsumerFactory<String, Inventory> consumerFactory() {
         Map<String, Object> config = new HashMap<>();
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
         config.put(ConsumerConfig.GROUP_ID_CONFIG, "Group-2");
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, OrderDeserializer.class); // Use custom deserializer
+        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, InventoryDeserializer.class); // Use custom deserializer
         config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
-        return new DefaultKafkaConsumerFactory<>(config, new StringDeserializer(), new OrderDeserializer());
+        return new DefaultKafkaConsumerFactory<>(config, new StringDeserializer(), new InventoryDeserializer());
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, Order> orderKafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, Order> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<String, Inventory> inventoryKafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, Inventory> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         return factory;
     }
 
     @Bean
-    public NewTopic orderTopic(){
+    public NewTopic paymentProceedTopic(){
         return new NewTopic("PaymentStatus", 1, (short) 1);
+    }
+    @Bean
+    public NewTopic orderTopic(){
+        return new NewTopic("PaymentFailed", 1, (short) 1);
     }
 }
