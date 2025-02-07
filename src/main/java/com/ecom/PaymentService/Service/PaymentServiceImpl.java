@@ -42,15 +42,20 @@ public class PaymentServiceImpl implements PaymentService{
         // let's make outbox for this event....
         // now based on payment status it will go to different topics
         String payload = objectMapper.writeValueAsString(payment);
+
+        if(payment.getStatus().equals("FAILED")){
+            PaymentOutbox paymentOutbox = PaymentOutbox
+                    .builder()
+                    .payload(payload)
+                    .topic("PaymentFailed")
+                    .build();
+            outboxRepository.save(paymentOutbox);
+        }
         PaymentOutbox paymentOutbox = PaymentOutbox
                 .builder()
                 .payload(payload)
+                .topic("PaymentStatus")
                 .build();
-        if(payment.getStatus().equals("FAILED")){
-            paymentOutbox.setTopic("PaymentFailed");
-            outboxRepository.save(paymentOutbox);
-        }
-        paymentOutbox.setTopic("PaymentStatus");
         outboxRepository.save(paymentOutbox);
     }
 
