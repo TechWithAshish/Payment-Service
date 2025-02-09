@@ -65,7 +65,6 @@ public class KafkaConfig {
         factory.setConsumerFactory(consumerFactory());
         return factory;
     }
-
     @Bean
     public NewTopic paymentProceedTopic(){
         return new NewTopic("PaymentStatus", 1, (short) 1);
